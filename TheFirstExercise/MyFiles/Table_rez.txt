@@ -1,0 +1,11 @@
+Case	One Book	Low Book	Rating	Product Date	Pairings
+10	hgj	vvjh	vjvj	vgvb	bhbhj
+9	jhjgf	fgf	jhjk	hjhk	kjkljlk
+17	jhj	ghf	fghfg	klk	hfghgf
+2	ghg	fgfgh	moo	oo	pp
+11	ttt	yyy	uuu	ii	pgf
+8	jghj	fgf	rty	uio	jinmbmn
+18	jghj	fgf	rty	uio	jinmbmn
+12	ghg	fgfgh	moo	oo	pp
+19	jhjgf	fgf	jhjk	hjhk	kjkljlk
+6	hjk	hjk	hjkh	jhk	hjkh
