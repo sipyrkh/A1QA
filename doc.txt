@@ -1,0 +1,9 @@
++размер size в конструкторе(0 и -) - два теста
++два одинаковых файла
++getFile
++write(file.size > available)
++constructor (check max.size)
++class exceptions
+
++ check symbols
++ illegal arguments
