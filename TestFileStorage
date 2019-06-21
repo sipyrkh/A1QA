@@ -1,0 +1,120 @@
+import exception.FileAlreadyExistsException;
+import org.testng.Assert;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+
+public class TestFileStorage {
+
+    private ArrayList<File> files;
+    private int availableSize;
+    private int maxSize;
+    private static FileStorage myFileStorage;
+    private static final long TIMER_FOR_EVEN_AVAILABLE_SIZE = 1800;
+    private static final long TIMER_FOR_ODD_AVAILABLE_SIZE = 3000;
+
+    @BeforeTest
+    public void testInitializeObjects(){
+
+        files = new ArrayList<File>();
+        availableSize = 100;
+        maxSize = 100;
+    }
+
+
+    @Test
+    public void testConstructorWithParameter(){
+        int expectedAvailableSize = 200;
+        myFileStorage = new FileStorage(maxSize);
+        Assert.assertEquals(myFileStorage.getAvailableSize(), expectedAvailableSize);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testConstructorException(){
+        int negativeSize = -1;
+        myFileStorage = new FileStorage(negativeSize);
+    }
+
+    @Test
+    public void testWrite() throws FileAlreadyExistsException {
+        File theSixsFile = new File("TheFirstFile.txt", "The First File content");
+        Assert.assertTrue(myFileStorage.write(theSixsFile));
+    }
+
+    @Test
+    public void testWriteInvalidAvalaibleSize() throws FileAlreadyExistsException {
+        String str = new String(new char[550]).replace("\0","a");
+        File theSixsFile = new File("TheFirstFile.txt", str);
+        Assert.assertFalse(myFileStorage.write(theSixsFile));
+    }
+
+    @Test
+    public void testWritingTimerOddAvailableSize() throws FileAlreadyExistsException {
+        File theSixsFile = new File("TheSixsFile.txt", "Thehgf");
+        long start = System.currentTimeMillis();
+        myFileStorage.write(theSixsFile);
+        long finish = System.currentTimeMillis();
+        long expectedTime = finish - start;
+        Assert.assertTrue(TIMER_FOR_ODD_AVAILABLE_SIZE <= expectedTime);
+    }
+
+    @Test
+    public void testWritingTimerEvenAvailableSize() throws FileAlreadyExistsException {
+        File theSixsFile = new File("TheSixsFile.txt", "qwertyui");
+        long start = System.currentTimeMillis();
+        myFileStorage.write(theSixsFile);
+        long finish = System.currentTimeMillis();
+        long expectedTime = finish - start;
+        Assert.assertTrue(TIMER_FOR_EVEN_AVAILABLE_SIZE <= expectedTime);
+    }
+
+
+    @Test
+    public void testGetAvailableSize(){
+        int expectedAvailableSize = 189;
+        System.out.println(myFileStorage.getAvailableSize());
+        Assert.assertEquals(myFileStorage.getAvailableSize(), expectedAvailableSize);
+    }
+
+    @Test
+    public void testGetMaxSize(){
+        int expectedMaxSize = 100;
+        Assert.assertEquals(myFileStorage.getMaxSize(), expectedMaxSize);
+    }
+
+
+    @Test
+    public void testGetFiles(){
+
+        for(int i = 0; i < files.size(); i++){
+            Assert.assertEquals(myFileStorage.getFiles().get(i).getFilename(), files.get(i).getFilename());
+        }
+    }
+
+    @Test
+    public void testDeleteExistentFile() throws FileAlreadyExistsException {
+        File theFirstFile = new File("TheFirstFile.txt", "The First File content");
+        File theSecondFile = new File("theSecondFile.txt", "The Second File content");
+        myFileStorage.write(theFirstFile);
+        myFileStorage.write(theSecondFile);
+        Assert.assertTrue(myFileStorage.isExists(theFirstFile.getFilename()));
+    }
+
+    @Test
+    public void testDeleteNonExistentFile() throws FileAlreadyExistsException {
+        File theFirstFile = new File("TheFirstFile.txt", "The First File content");
+        File theSecondFile = new File("theSecondFile.txt", "The Second File content");
+        myFileStorage.write(theFirstFile);
+        Assert.assertFalse(myFileStorage.isExists(theSecondFile.getFilename()));
+    }
+
+    @Test
+    public void testDeleteFile() throws FileAlreadyExistsException {
+        File theFirstFile = new File("TheFirstFile.txt", "The First File content");
+        myFileStorage.write(theFirstFile);
+        Assert.assertTrue(myFileStorage.delete(theFirstFile.getFilename()));
+    }
+
+
+}
