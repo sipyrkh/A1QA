@@ -1,0 +1,43 @@
+import org.testng.Assert;
+import org.testng.annotations.*;
+
+
+public class FileTest {
+
+    private static File myFile;
+    private static String filename;
+    private static String content;
+
+    @BeforeTest
+    public void initializeObject(){
+        filename = "TheFirstFile.txt";
+        content = "The First File content";
+        myFile = new File(filename, content);
+    }
+
+   @Test
+   public void testGetExtension(){
+       String expectedExtension = "txt";
+       Assert.assertEquals(myFile.getExtension(), expectedExtension);
+   }
+
+    @Test
+    public void testGetSize(){
+        int expectedSize = 11;
+        Assert.assertEquals(myFile.getSize(), expectedSize);
+    }
+
+    @Test
+    public void testGetContent(){
+        String expectedContent = "The First File content";
+        Assert.assertEquals(myFile.getContent(), expectedContent);
+    }
+
+    @Test
+    public void testGetFilename(){
+        String expectedFilename = "TheFirstFile.txt";
+        Assert.assertEquals(myFile.getFilename(), expectedFilename);
+    }
+
+
+}
