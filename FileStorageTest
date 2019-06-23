@@ -1,0 +1,185 @@
+import org.testng.Assert;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import java.nio.file.FileAlreadyExistsException;
+import java.util.ArrayList;
+
+public class FileStorageTest {
+
+    private ArrayList<File> files;
+    private int availableSize;
+    private int maxSize;
+    private static final long TIMER_FOR_EVEN_AVAILABLE_SIZE = 1800;
+    private static final long TIMER_FOR_ODD_AVAILABLE_SIZE = 3000;
+
+    @BeforeTest
+    public void testInitializeObjects(){
+
+        files = new ArrayList<>();
+        availableSize = 100;
+        maxSize = 100;
+    }
+
+    @Test
+    public void testDefaultConstructorWithDefaultValueMaxSize(){
+        FileStorage fileStorage =  new FileStorage();
+        int expectedMaxSize = 100;
+        Assert.assertEquals(fileStorage.getMaxSize(), expectedMaxSize);
+    }
+    @Test
+    public void testDefaultConstructorWithDefaultValueAvailableSize(){
+        FileStorage fileStorage =  new FileStorage();
+        int expectedAvailableSize = 100;
+        Assert.assertEquals(fileStorage.getAvailableSize(), expectedAvailableSize);
+    }
+
+    @Test(groups = "positive")
+    public void testConstructorWithParameterAvailableSize(){
+        int expectedAvailableSize = 100;
+        FileStorage fileStorage =  new FileStorage(maxSize);
+        Assert.assertEquals(fileStorage.getAvailableSize(), expectedAvailableSize);
+    }
+
+    @Test(groups = "positive")
+    public void testConstructorWithParameterMaxSize(){
+        int size = 100;
+        int expectedMaxSize = 100;
+        FileStorage fileStorage =  new FileStorage(size);
+        Assert.assertEquals(fileStorage.getMaxSize(), expectedMaxSize);
+    }
+
+    @Test(groups = "negative", expectedExceptions = IllegalArgumentException.class)
+    public void testConstructorWithParameterMaxSizeNull(){
+        int size = 0;
+        FileStorage fileStorage =  new FileStorage(size);
+    }
+
+    @Test(groups = "negative", expectedExceptions = IllegalArgumentException.class)
+    public void testConstructorWithParameterNegativeMaxSize(){
+        int size = -34;
+        FileStorage fileStorage =  new FileStorage(size);
+    }
+
+    @Test(groups = "positive")
+    public void testWriteFile() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage();
+        File theFirstFile = new File("TheFirstFile.txt", "The First File content");
+        Assert.assertTrue(fileStorage.write(theFirstFile));
+    }
+
+    @Test(groups = "negative", expectedExceptions = FileAlreadyExistsException.class)
+    public void testWriteTwoSimilarFiles() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage();
+        File theFirstFile = new File("TheFirstFile.txt", "The First File content");
+        File theSecondFile = new File("TheFirstFile.txt", "The First File content");
+        fileStorage.write(theFirstFile);
+        fileStorage.write(theSecondFile);
+    }
+
+    @Test(groups = "positive")
+    public void testWriteInvalidAvalaibleSize() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage();
+        String content = new String(new char[550]).replace("\0","a");
+        File theFirstFile = new File("TheFirstFile.txt", content);
+        Assert.assertFalse(fileStorage.write(theFirstFile));
+    }
+
+    @Test(groups = "positive")
+    public void testWriteTimerOddAvailableSize() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage();
+        File theFirstFile = new File("TheFirstFile.txt", "Thehgf");
+        long start = System.currentTimeMillis();
+        fileStorage.write(theFirstFile);
+        long finish = System.currentTimeMillis();
+        long expectedTime = finish - start;
+        Assert.assertTrue(TIMER_FOR_ODD_AVAILABLE_SIZE <= expectedTime);
+    }
+
+    @Test(groups = "positive")
+    public void testWriteTimerEvenAvailableSize() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage();
+        File theFirstFile = new File("TheFirstFile.txt", "qwertyui");
+        long start = System.currentTimeMillis();
+        fileStorage.write(theFirstFile);
+        long finish = System.currentTimeMillis();
+        long expectedTime = finish - start;
+        Assert.assertTrue(TIMER_FOR_EVEN_AVAILABLE_SIZE <= expectedTime);
+    }
+
+    @Test(groups = "positive")
+    public void testWriteFileWhereFileSizeMoreThanAvailablesize() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage(maxSize);
+        String contentFile = new String(new char[700]).replace("\0", "g");
+        File theFirstFile = new File("TheFirstFile.txt",contentFile);
+        Assert.assertFalse(fileStorage.write(theFirstFile));
+    }
+
+    @Test(groups = "positive")
+    public void testGetFile() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage();
+        File theFirstFile = new File("TheFirstFile.txt", "The First File content");
+        fileStorage.write(theFirstFile);
+        Assert.assertEquals(fileStorage.getFile(theFirstFile.getFilename()), theFirstFile);
+    }
+
+    @Test(groups = "negative")
+    public void testGetAvailableSize(){
+        FileStorage fileStorage =  new FileStorage();
+        int expectedAvailableSize = 200;
+        Assert.assertEquals(fileStorage.getAvailableSize(), expectedAvailableSize);
+    }
+
+    @Test(groups = "positive")
+    public void testGetMaxSize(){
+        FileStorage fileStorage =  new FileStorage();
+        int expectedMaxSize = 100;
+        Assert.assertEquals(fileStorage.getMaxSize(), expectedMaxSize);
+    }
+
+
+    @Test(groups = "positive")
+    public void testGetFiles() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage();
+        File theFirstFile = new File("TheFirstFile.txt", "The First File content");
+        File theSecondFile = new File("theSecondFile.txt", "The Second File content");
+        fileStorage.write(theFirstFile);
+        fileStorage.write(theSecondFile);
+        files.add(theFirstFile);
+        files.add(theSecondFile);
+        for(int i = 0; i < files.size(); i++){
+            Assert.assertEquals(fileStorage.getFiles().get(i), files.get(i));
+        }
+    }
+
+    @Test(groups = "positive")
+    public void testDeleteExistentFile() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage();
+        File theFirstFile = new File("TheFirstFile.txt", "The First File content");
+        File theSecondFile = new File("theSecondFile.txt", "The Second File content");
+        fileStorage.write(theFirstFile);
+        fileStorage.write(theSecondFile);
+        Assert.assertTrue(fileStorage.isExists(theFirstFile.getFilename()));
+    }
+
+    @Test(groups = "positive")
+    public void testDeleteNonExistentFile() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage();
+        File theFirstFile = new File("TheFirstFile.txt", "The First File content");
+        File theRandomFile = new File("theRandomFile.txt", "The Random File content");
+        fileStorage.write(theFirstFile);
+        Assert.assertFalse(fileStorage.isExists(theRandomFile.getFilename()));
+    }
+
+    @Test(groups = "negative")
+    public void testVacateMemoryAfterDeletingFile() throws FileAlreadyExistsException {
+        FileStorage fileStorage =  new FileStorage();
+        File theFirstFile = new File("TheFirstFile.txt", "The First File content");
+        fileStorage.write(theFirstFile);
+        fileStorage.delete(theFirstFile.getFilename());
+        int afterDeleting = fileStorage.getAvailableSize();
+        int expectedAvailableSize = afterDeleting - theFirstFile.getSize();
+        Assert.assertEquals(fileStorage.getAvailableSize(), expectedAvailableSize);
+    }
+
+}
