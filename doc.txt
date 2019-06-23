@@ -1,9 +1,43 @@
-+размер size в конструкторе(0 и -) - два теста
-+два одинаковых файла
-+getFile
-+write(file.size > available)
-+constructor (check max.size)
-+class exceptions
-
-+ check symbols
-+ illegal arguments
+Summary: Что?Где?Когда?
+-------------------------------------------------------------------------------------------------------------------------
+Summary: [FileStorage.java] Конструктор с параметрами генерирует неверный доступный размер хранилища при вызове.
+Preconditions: 
+Steps:  1. Создание объекта хранилища FileStorage;
+	2. Инициализация FileStorage с передачей конструктору параметра MaxSize;
+	3. Вызов метода getAvailableSize.
+Actual result: Параметр AvailableSize больше, чем MaxSize.
+Expected result: Параметр AvailableSize равен MaxSize.
+-------------------------------------------------------------------------------------------------------------------------
+Summary: [FileStorage.java] Конструктор с параметрами не генерирует исключение IllegalArgumentException 
+			    при максимальном размере хранилища равном нулю.
+Preconditions: 
+Steps:  1. Создание объекта хранилища FileStorage;
+	2. Инициализация FileStorage с передачей конструктору параметра MaxSize равном 0;
+Actual result: Конструктор не генерирует исключение.
+Expected result: Конструктор должен сгенерировать исключение IllegalArgumentException.
+-------------------------------------------------------------------------------------------------------------------------
+Summary: [FileStorage.java] Конструктор с параметрами не генерирует исключение IllegalArgumentException 
+			    при отрицательном размере хранилища.
+Preconditions: 
+Steps:  1. Создание объекта хранилища FileStorage;
+	2. Инициализация FileStorage с передачей конструктору параметра MaxSize меньше 0;
+Actual result: Конструктор не генерирует исключение.
+Expected result: Конструктор должен сгенерировать исключение IllegalArgumentException.
+-------------------------------------------------------------------------------------------------------------------------
+Summary: [FileStorage.java] Метод getAvailableSize возвращает неверный доступный размер хранилища при вызове.
+Preconditions: 
+Steps:  1. Создание объекта хранилища FileStorage;
+	2. Инициализация FileStorage с передачей конструктору параметра MaxSize;
+	3. Вызов метода getAvailableSize.
+Actual result: Параметр AvailableSize больше, чем MaxSize.
+Expected result: Параметр AvailableSize равен MaxSize.
+-------------------------------------------------------------------------------------------------------------------------
+Summary: [FileStorage.java] Метод Write не генерирует исключение FileAlreadyExistsException при записи одинаковых файлов.
+Preconditions: 
+Steps:  1. Создание объекта хранилища FileStorage;
+	2. Создание объекта первого файла File;
+	3. Создание объекта первого файла File c именем первого файла;
+	4. Вызов метода Write с передачей параметра первого файла;
+	5. Вызов метода Write с передачей параметра второго файла.
+Actual result: Записаны оба файла.
+Expected result: Метод генерирует исключение FileAlreadyExistsException при записи второго файла.
