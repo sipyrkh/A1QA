@@ -15,16 +15,55 @@ public class FileTest {
         myFile = new File(filename, content);
     }
 
-   @Test
-   public void testGetExtension(){
-       String expectedExtension = "txt";
-       Assert.assertEquals(myFile.getExtension(), expectedExtension);
-   }
+    @Test
+    public void testGetExtension(){
+        String expectedExtension = "txt";
+        Assert.assertEquals(myFile.getExtension(), expectedExtension);
+    }
+
+    @Test
+    public void testEmptyExtension(){
+        String filenameWithoutExtension = "TheSecondFile.";
+        File file = new File(filenameWithoutExtension, content);
+        String expectedExtension = "TheSecondFile";
+        Assert.assertEquals(file.getExtension(), expectedExtension);
+    }
 
     @Test
     public void testGetSize(){
-        int expectedSize = 11;
+        int expectedSize = (myFile.getContent().length()-1) / 2;
         Assert.assertEquals(myFile.getSize(), expectedSize);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testEmptyFilename(){
+        String filename = ".txt";
+        File file = new File(filename, content);
+    }
+
+    @Test
+    public void testGetSizeWithEmptyContent(){
+        int expectedSize = 1;
+        String emptyContent = "";
+        File file = new File(filename, emptyContent);
+        Assert.assertEquals(file.getSize(), expectedSize);
+
+    }
+
+    @Test
+    public void testGetSizeWithEvenSizeOfContent(){
+        int expectedSize = 6;
+        String contentEven = new String(new char[12]).replace("\0", "a");
+        File file = new File(filename, contentEven);
+        Assert.assertEquals(file.getSize(), expectedSize);
+    }
+
+    @Test
+    public void testGetSizeWithOddSizeOfContent(){
+        int expectedSize = 3;
+        String contentOdd = new String(new char[6]).replace("\0", "a");
+        File file = new File(filename, contentOdd);
+        Assert.assertEquals(file.getSize(), expectedSize);
     }
 
     @Test
@@ -39,5 +78,25 @@ public class FileTest {
         Assert.assertEquals(myFile.getFilename(), expectedFilename);
     }
 
+    @Test(dataProvider = "unsupportedSymbols")
+    public void testUnsupportSymbolsInFilename(String filename, String content){
+        File file = new File(filename, content);
+    }
 
-}
+    @DataProvider(name = "unsupportedSymbols")
+    public Object[][] dataProviderForUnsupportedSymbols() {
+        return new Object[][]{
+                {new File(">.txt", "content")},
+                {new File("+.txt", "content")},
+                {new File("=.txt", "content")},
+                {new File("[.txt", "content")},
+                {new File("].txt", "content")},
+                {new File(":.txt", "content")},
+                {new File(";.txt", "content")},
+                {new File(",.txt", "content")},
+                {new File("..txt", "content")},
+                {new File("?.txt", "content")}
+            };
+        }
+    }
+
