@@ -1,0 +1,24 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class AuthorizationPage {
+
+    private FirefoxDriver driver;
+    private WebElement FieldUsername = driver.findElement(By.xpath("//input[@placeholder='Ник или e-mail']"));
+    private WebElement FieldPassword = driver.findElement(By.xpath("//input[@placeholder='Пароль']"));
+    private WebElement ButtonEntering = driver.findElement(By.cssSelector("button.auth-button"));
+
+    AuthorizationPage(FirefoxDriver driver){
+        this.driver = driver;
+    }
+
+    public AuthorizationPage Login(String username, String password){
+
+        FieldUsername.sendKeys(username);
+        FieldPassword.sendKeys(password);
+        ButtonEntering.submit();
+
+        return new AuthorizationPage(driver);
+    }
+}
