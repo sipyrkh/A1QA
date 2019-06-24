@@ -1,0 +1,58 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+public class OnlinerTestPage {
+
+    private static final String USERNAME = "sipyrkh@yahoo.com";
+    private static final String PASSWORD = "Sipyrkh199828";
+    private static FirefoxDriver driver;
+    private static WebElement buttonLogin;
+    private static WebElement buttonCatalog;
+    private static List<WebElement> categories;
+
+    @BeforeTest
+    public void setUp(){
+        driver = new FirefoxDriver();
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        driver.get("http://onliner.by");
+    }
+
+    @AfterTest
+    public void tearDown(){
+        driver.close();
+    }
+
+    @Test
+    public void Login(){
+        buttonLogin = driver.findElement(By.cssSelector("div.auth-bar__item:nth-child(1)"));
+        buttonLogin.click();
+        AuthorizationPage authorizationPage = new AuthorizationPage(driver);
+        authorizationPage.Login(USERNAME, PASSWORD);
+    }
+
+    @Test
+    public void getCategories(){
+        List<String> list = new ArrayList<String>();
+        categories = driver.findElements(By.className("project-navigation__sign"));
+        for (WebElement category : categories) {
+            list.add(category.getText());
+        }
+        for (String s : list) {
+            System.out.println(s);
+        }
+    }
+
+    @Test
+    public void goToCatalog(){
+        buttonCatalog = driver.findElement(By.cssSelector("li.b-main-navigation__item:nth-child(1) > a:nth-child(1) > span:nth-child(1)"));
+        buttonCatalog.click();
+    }
+}
