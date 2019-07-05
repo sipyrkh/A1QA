@@ -1,45 +1,24 @@
 package service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 
 public class ReadPropertyFile {
 
-    private static Properties properties = new Properties();
-    private static String propertiesFilePath = System.getProperty("user.dir") + "/config.properties";
+    private static Properties properties;
 
-    public ReadPropertyFile() {
+    static {
+        properties = new Properties();
+        URL props = ClassLoader.getSystemResource("config.properties");
         try {
-            InputStream inputStream = new FileInputStream(propertiesFilePath);
-            properties.load(inputStream);
+            properties.load(props.openStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static String getUsername(){
-        return properties.getProperty("username");
-    }
-
-    public static String getPassword(){
-        return properties.getProperty("password");
-    }
-
-    public static String getUrl(){
-        return properties.getProperty("url");
-    }
-
-    static String getFilename(){
-        return properties.getProperty("filename");
-    }
-
-    static String getPath(){
-        return properties.getProperty("pathname");
-    }
-
-    public static String getBrowser(){
-        return properties.getProperty("browser");
+    public static String getProperty(String key){
+        return properties.getProperty(key);
     }
 }

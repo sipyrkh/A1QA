@@ -1,10 +1,12 @@
 package pageobject;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.*;
@@ -54,10 +56,57 @@ public class SteamBrowsingActionPage extends PageObject {
         int indexOfMaxDiscount = integerList.indexOf(maxDiscount);
 
         listDiscountsFinal.get(indexOfMaxDiscount).click();
+
     }
 
-    public void gameIsOpened(){
+    public boolean gameIsOpened(){
 
+        try {
+            driver.findElement(By.xpath("//img[@class = 'package_header']"));
+        }catch (NoSuchElementException e){
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean ageCheckerIsOpened(){
+
+        try {
+            driver.findElement(By.xpath("//div[@class = 'agegate_text_container']"));
+        }catch (NoSuchElementException e){
+            return false;
+        }
+
+        return true;
+    }
+
+    public void selectAgeFromDropdown(){
+        Select selectAge = new Select(driver.findElement(By.xpath("//select[@id = 'ageDay']")));
+        selectAge.selectByVisibleText("21");
+    }
+
+    public void selectAgeMonthFromDropdown(){
+        Select selectMonth = new Select(driver.findElement(By.xpath("//select[@id = 'ageMonth']")));
+        selectMonth.selectByVisibleText("May");
+    }
+
+    public void selectAgeYearFromDropdown(){
+        Select selectYear = new Select(driver.findElement(By.xpath("//select[@id = 'ageYear']")));
+        selectYear.selectByVisibleText("1993");
+    }
+
+    public void confirmDateOfBirth(){
+        WebElement buttonConfirmDateOfBirth = driver.findElement(By.xpath("//a[@class = 'btnv6_blue_hoverfade btn_medium']"));
+        buttonConfirmDateOfBirth.click();
+    }
+
+    public void getCurrentDiscountAndPrice(){
+        WebElement currentDiscount = driver.findElement(By.xpath("//div[@class = 'discount_block game_purchase_discount']"));
+    }
+
+    public void getCurrentNameofGame(){
+        WebElement currentNameOfGame = driver.findElement(By.cssSelector(".game_area_purchase_game.bundle.ds_no_flags > h1"));
     }
 
 }
