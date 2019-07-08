@@ -1,9 +1,9 @@
+import driverInitializing.DriverInitializer;
+import element.Button;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import pageobject.SteamBrowsingActionPage;
-import pageobject.SteamBrowsingIndiePage;
-import pageobject.SteamDownloadingPage;
 import pageobject.SteamHomePage;
 import service.ReadPropertyFile;
 
@@ -40,7 +40,7 @@ public class SteamTest {
         SteamHomePage steamHomePage = new SteamHomePage(driver);
         //steamHomePage.getHome();
         Assert.assertTrue(steamHomePage.homePageIsOpened(), "Home page isn't opened");
-        steamHomePage.setLanguage();
+        //steamHomePage.setLanguage();
         steamHomePage.selectActionGame();
 
         SteamBrowsingActionPage steamBrowsingActionPage = new SteamBrowsingActionPage(driver);

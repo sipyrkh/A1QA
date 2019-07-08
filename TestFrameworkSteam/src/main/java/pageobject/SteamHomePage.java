@@ -17,7 +17,7 @@ public class SteamHomePage extends PageObject {
     WebElement buttonSelectGame;
     @FindBy(css = "#genre_flyout > div:nth-child(1) > a:nth-child(9)")
     WebElement buttonActionGame;
-    @FindBy(css = "#genre_flyout > div:nth-child(1) > a:nth-child(12)")
+    @FindBy(xpath = "//a[text()[contains(.,'Indie')]]")
     WebElement buttonIndieGame;
     private WebDriverWait wait = new WebDriverWait(driver, 10);
 
@@ -42,8 +42,7 @@ public class SteamHomePage extends PageObject {
         wait.until(ExpectedConditions.visibilityOf(buttonSelectGame));
         Actions actions = new Actions(driver);
         actions.moveToElement(buttonSelectGame).build().perform();
-        actions.moveToElement(buttonActionGame).build().perform();
-        wait.until(ExpectedConditions.visibilityOf(buttonActionGame));
+        //wait.until(ExpectedConditions.visibilityOf(buttonActionGame));
         actions.moveToElement(buttonActionGame).click().perform();
     }
 
